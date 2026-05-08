@@ -45,7 +45,7 @@ img{max-width:100%;display:block}
   font-size:.75rem;color:var(--brown-light);font-weight:800;
   letter-spacing:4px;text-transform:uppercase;text-align:center;margin-bottom:20px
 }
-.home-deco{font-size:clamp(2.4rem,8vw,3.2rem);margin-bottom:6px;animation:bounce 2.2s ease-in-out infinite}
+.home-deco{width:80px;height:80px;margin-bottom:6px;animation:bounce 2.2s ease-in-out infinite; object-fit:contain;}
 @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 
 /* ── CARD ── */
@@ -278,7 +278,7 @@ label{display:block;font-weight:700;font-size:.88rem;color:var(--brown-mid);marg
 
 <!-- ══ HOME ══════════════════════════════════════════════ -->
 <div id="screen-home" class="screen active">
-  <div class="home-deco">🎲</div>
+  <img src="logo.png" alt="Zar" class="home-deco" />
   <div class="game-logo">Eski Zamanlar!</div>
   <div class="game-subtitle">eva 2026</div>
 
