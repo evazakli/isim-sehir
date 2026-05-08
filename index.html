@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
 <meta name="theme-color" content="#2C1A0E"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<title>Kategoriler!</title>
+<title>Eski Zamanlar!</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
@@ -284,9 +284,9 @@ label{display:block;font-weight:700;font-size:.88rem;color:var(--brown-mid);marg
 
   <div class="card">
     <div class="card-title">👤 Oyuncu Bilgileri</div>
-    <label for="nickname-input">Takma Ad</label>
+    <label for="nickname-input">Mahlaz</label>
     <input id="nickname-input" class="input" type="text" placeholder="Adını gir…" maxlength="16" autocomplete="nickname"/>
-    <label>Avatar Seç</label>
+    <label>Hayvanat Seç</label>
     <div class="avatar-grid" id="avatar-grid"></div>
   </div>
 
@@ -304,7 +304,7 @@ label{display:block;font-weight:700;font-size:.88rem;color:var(--brown-mid);marg
 <!-- ══ CREATE ══════════════════════════════════════════════ -->
 <div id="screen-create" class="screen">
   <div class="game-logo" style="font-size:1.8rem;margin-bottom:4px">⚙️ Oda Ayarları</div>
-  <div class="game-subtitle">ODA SAHİBİ</div>
+  <div class="game-subtitle">ODA REİSİ</div>
 
   <div class="card">
     <div class="card-title">⏱️ Tur Süresi</div>
@@ -471,8 +471,8 @@ const SUPABASE_ANON_KEY = 'sb_publishable_lS9b_m_m5XnIaZhoJ-2-iA_uNwPfgo_';
 // SABİTLER
 // ════════════════════════════════════════════════════════════
 const LETTER_POOL = ['A','B','C','Ç','D','E','F','G','H','I','İ','J','K','L','M','N','O','Ö','P','R','S','Ş','T','U','Ü','V','Y','Z'];
-const ALL_CATEGORIES = ['isim','şehir','hayvan','ünlü','ülke','bitki','yiyecek','spor','renk','meslek','film','marka'];
-const ALL_AVATARS    = ['🦁','🐯','🦊','🐺','🐸','🦝','🐧','🦋','🐙','🦄','🐉','🐻','🦩','🦀','🐬','🦜','🐝','🦖'];
+const ALL_CATEGORIES = ['isim','vilayet','hayvan','ünlü','ülke','bitki','yiyecek','spor','renk','meslek','film','marka'];
+const ALL_AVATARS    = ['🦁','🦥','🦊','🐺','🐸','🦝','🐧','🐈','🐙','🐮','🦉','🐻','🐤','🦀','🦈','🦅','🐝','🦖'];
 
 // ════════════════════════════════════════════════════════════
 // SUPABASE
@@ -488,7 +488,7 @@ const S = {
   players: [], answers: [], myAnswers: {}, myVotes: {},
   submitted: false, timerInterval: null,
   selectedDuration: 60,
-  selectedCategories: ['isim','şehir','hayvan','ünlü','ülke','bitki'],
+  selectedCategories: ['isim','vilayet','hayvan','ünlü','ülke','bitki'],
   subs: [],
 };
 
