@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#2C1A0E" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="description" content="Türkçe çok oyunculu kategoriler oyunu" />
+  <title>Kategoriler!</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- HOME -->
+<div id="screen-home" class="screen active">
+  <div class="home-deco">🎲</div>
+  <div class="game-logo">KATEGORİLER!</div>
+  <div class="game-subtitle">Harf gelir · cevap verilir</div>
+  <div class="card">
+    <div class="card-title">👤 Oyuncu Bilgileri</div>
+    <label for="nickname-input">Takma Ad</label>
+    <input id="nickname-input" class="input" type="text" placeholder="Adını gir…" maxlength="16" autocomplete="nickname" />
+    <label>Avatar Seç</label>
+    <div class="avatar-grid" id="avatar-grid"></div>
+  </div>
+  <div class="card">
+    <button class="btn btn-red" onclick="showCreateRoom()">🏠 Oda Aç</button>
+    <hr class="divider" />
+    <label for="join-code-input">Oda Kodu ile Katıl</label>
+    <input id="join-code-input" class="input" type="text" placeholder="XXXXXX" maxlength="6"
+           style="text-transform:uppercase;letter-spacing:5px;text-align:center;font-family:var(--font-title)"
+           oninput="this.value=this.value.toUpperCase()" />
+    <button class="btn btn-blue" onclick="joinRoom()">🚪 Odaya Katıl</button>
+  </div>
+</div>
+
+<!-- CREATE -->
+<div id="screen-create" class="screen">
+  <div class="game-logo" style="font-size:1.8rem;margin-bottom:4px">⚙️ Oda Ayarları</div>
+  <div class="game-subtitle">ODA SAHİBİ</div>
+  <div class="card">
+    <div class="card-title">⏱️ Tur Süresi</div>
+    <div class="settings-row" id="duration-group">
+      <button class="toggle-btn" data-val="45">45 sn</button>
+      <button class="toggle-btn active" data-val="60">60 sn</button>
+      <button class="toggle-btn" data-val="90">90 sn</button>
+      <button class="toggle-btn" data-val="120">120 sn</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📚 Kategoriler <small style="font-weight:600;color:var(--brown-light);font-size:.78rem">(4–8 seç)</small></div>
+    <div class="settings-row" id="category-group"></div>
+  </div>
+  <div class="card">
+    <button class="btn btn-green" onclick="createRoom()">✅ Odayı Oluştur</button>
+    <button class="btn btn-ghost" onclick="showScreen('screen-home')">← Geri</button>
+  </div>
+</div>
+
+<!-- LOBBY -->
+<div id="screen-lobby" class="screen">
+  <div class="game-logo" style="font-size:1.7rem;margin-bottom:2px">🏠 Lobi</div>
+  <div class="card">
+    <div class="card-title">🔑 Oda Kodu</div>
+    <div class="room-code-display" id="lobby-code">------</div>
+    <p class="hint" style="text-align:center;margin-top:6px">Arkadaşlarını davet et!</p>
+    <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="copyCode()">📤 Davet Et / Kopyala</button>
+  </div>
+  <div class="card">
+    <div class="card-title">👥 Oyuncular (<span id="player-count">0</span>/10)</div>
+    <div class="players-list" id="players-list"></div>
+  </div>
+  <div class="card">
+    <div id="lobby-host-controls" style="display:none">
+      <button class="btn btn-red" id="start-btn" onclick="startGame()">🚀 Oyunu Başlat!</button>
+    </div>
+    <div id="lobby-wait-msg" style="display:none;text-align:center;padding:10px;font-weight:700;color:var(--brown-mid)">
+      Oda sahibinin başlatması bekleniyor…
+      <div class="waiting-dots" style="margin-top:8px"><span>●</span><span>●</span><span>●</span></div>
+    </div>
+    <button class="btn btn-ghost" style="margin-top:6px" onclick="leaveRoom()">🚪 Odadan Çık</button>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div class="chat-box" style="border:none;box-shadow:none;height:230px">
+      <div class="chat-title">💬 Sohbet</div>
+      <div class="chat-messages" id="lobby-chat-messages"></div>
+      <div class="chat-input-row">
+        <input type="text" id="lobby-chat-input" placeholder="Bir şeyler yaz…" maxlength="120"
+               onkeydown="if(event.key==='Enter')sendChat('lobby')" />
+        <button class="chat-send-btn" onclick="sendChat('lobby')">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div id="screen-game" class="screen" style="padding:10px 10px 80px">
+  <div class="game-top-bar" style="margin-bottom:10px">
+    <div class="round-info">Tur <span id="round-num">1</span> / <span id="total-rounds">28</span></div>
+    <div class="letter-badge" id="current-letter">A</div>
+    <div class="timer-display" id="timer">60</div>
+  </div>
+  <div class="game-main">
+    <div class="game-left">
+      <div class="answers-grid" id="answers-grid"></div>
+      <button class="btn btn-red" id="submit-btn" onclick="submitAnswers()">✏️ Cevapları Gönder!</button>
+      <div id="waiting-others" style="display:none;text-align:center;padding:10px;font-weight:700;color:var(--brown-mid)">
+        Diğer oyuncular tamamlanıyor…
+        <div class="waiting-dots" style="margin-top:6px"><span>●</span><span>●</span><span>●</span></div>
+      </div>
+    </div>
+    <div class="game-right">
+      <div class="card" style="padding:12px;margin-bottom:10px">
+        <div class="card-title" style="font-size:.95rem;margin-bottom:8px">🏆 Skor</div>
+        <div id="mini-scores"></div>
+      </div>
+      <div class="chat-box">
+        <div class="chat-title">💬 Sohbet</div>
+        <div class="chat-messages" id="game-chat-messages"></div>
+        <div class="chat-input-row">
+          <input type="text" id="game-chat-input" placeholder="Mesaj…" maxlength="120"
+                 onkeydown="if(event.key==='Enter')sendChat('game')" />
+          <button class="chat-send-btn" onclick="sendChat('game')">➤</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VOTING -->
+<div id="screen-voting" class="screen">
+  <div class="game-logo" style="font-size:1.7rem;margin-bottom:4px">🗳️ Oylama</div>
+  <p style="text-align:center;font-weight:700;color:var(--brown-mid);margin-bottom:12px">
+    Bu turun harfi: <span id="vote-letter" style="font-family:var(--font-title);color:var(--red);font-size:1.5rem"></span>
+  </p>
+  <div id="vote-categories-container" style="width:100%;max-width:520px"></div>
+  <div class="card" style="max-width:520px">
+    <button class="btn btn-green" onclick="submitVotes()">✅ Oyları Onayla</button>
+  </div>
+  <div class="card" style="max-width:520px;padding:0;overflow:hidden">
+    <div class="chat-box" style="border:none;box-shadow:none;height:210px">
+      <div class="chat-title">💬 Sohbet</div>
+      <div class="chat-messages" id="vote-chat-messages"></div>
+      <div class="chat-input-row">
+        <input type="text" id="vote-chat-input" placeholder="Mesaj…" maxlength="120"
+               onkeydown="if(event.key==='Enter')sendChat('vote')" />
+        <button class="chat-send-btn" onclick="sendChat('vote')">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="screen-results" class="screen">
+  <div class="game-logo" style="font-size:1.7rem;margin-bottom:4px">📊 Sonuçlar</div>
+  <div class="banner" id="results-banner">Tur Sonuçları</div>
+  <div class="leaderboard" id="leaderboard"></div>
+  <div class="card" style="max-width:480px">
+    <div id="results-host-controls" style="display:none">
+      <button class="btn btn-red" onclick="nextRound()">▶️ Sonraki Tur</button>
+    </div>
+    <div id="results-wait-msg" style="display:none;text-align:center;padding:10px;font-weight:700;color:var(--brown-mid)">
+      Sonraki tur için bekleniyor…
+      <div class="waiting-dots" style="margin-top:6px"><span>●</span><span>●</span><span>●</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- GAMEOVER -->
+<div id="screen-gameover" class="screen">
+  <div class="home-deco" style="font-size:4rem;animation:none">🏆</div>
+  <div class="game-logo">Oyun Bitti!</div>
+  <div class="game-subtitle">FİNAL SIRALAMASI</div>
+  <div class="leaderboard" id="final-leaderboard"></div>
+  <div class="card" style="max-width:480px">
+    <button class="btn btn-yellow" onclick="playAgain()">🔄 Tekrar Oyna</button>
+    <button class="btn btn-ghost"  onclick="showScreen('screen-home')">🏠 Ana Menü</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- Global showScreen (inline onclick için) -->
+<script>
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+<!-- Modüler JS -->
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
