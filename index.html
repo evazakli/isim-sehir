@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<meta name="theme-color" content="#2C1A0E"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>Kategoriler!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --cream:#FFF8E7;--brown-dark:#2C1A0E;--brown-mid:#5C3317;--brown-light:#8B5E3C;
+  --red:#D63B2F;--red-light:#E8594A;--yellow:#F5C842;--yellow-dark:#D4A017;
+  --green:#2D7D46;--green-light:#3AA05A;--blue:#1D5FA8;--white:#FFFDF5;
+  --border:3px solid var(--brown-dark);--radius:12px;
+  --ft:'Fredoka One',cursive;--fb:'Nunito',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+html,body{height:100%;font-family:var(--fb);color:var(--brown-dark);overflow-x:hidden}
+body{
+  background-color:var(--cream);
+  background-image:
+    radial-gradient(circle at 15% 15%,rgba(245,200,66,.18) 0%,transparent 50%),
+    radial-gradient(circle at 85% 85%,rgba(214,59,47,.12) 0%,transparent 50%),
+    repeating-linear-gradient(45deg,transparent,transparent 22px,rgba(139,94,60,.04) 22px,rgba(139,94,60,.04) 23px);
+}
+button{cursor:pointer;font-family:var(--fb)}
+img{max-width:100%;display:block}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100dvh;padding:16px 12px 90px;flex-direction:column;align-items:center}
+.screen.active{display:flex}
+
+/* ── LOGO ── */
+.game-logo{
+  font-family:var(--ft);font-size:clamp(2rem,9vw,3.6rem);
+  color:var(--red);text-shadow:3px 3px 0 var(--brown-dark),-1px -1px 0 var(--yellow-dark);
+  letter-spacing:2px;text-align:center;line-height:1;margin-bottom:4px
+}
+.game-subtitle{
+  font-size:.75rem;color:var(--brown-light);font-weight:800;
+  letter-spacing:4px;text-transform:uppercase;text-align:center;margin-bottom:20px
+}
+.home-deco{font-size:clamp(2.4rem,8vw,3.2rem);margin-bottom:6px;animation:bounce 2.2s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+/* ── CARD ── */
+.card{
+  background:var(--white);border:var(--border);border-radius:var(--radius);
+  padding:18px 16px;width:100%;max-width:480px;
+  box-shadow:5px 5px 0 var(--brown-dark);margin-bottom:14px
+}
+.card-title{
+  font-family:var(--ft);font-size:1.1rem;color:var(--brown-dark);
+  margin-bottom:12px;display:flex;align-items:center;gap:8px
+}
+
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-weight:800;font-size:1rem;padding:13px 20px;border:var(--border);
+  border-radius:10px;box-shadow:4px 4px 0 var(--brown-dark);
+  transition:transform .08s,box-shadow .08s;text-decoration:none;
+  letter-spacing:.3px;width:100%;margin-bottom:10px;
+  user-select:none;-webkit-user-select:none
+}
+.btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--brown-dark)}
+.btn:disabled{opacity:.5;pointer-events:none}
+.btn-red{background:var(--red);color:var(--white)}
+.btn-yellow{background:var(--yellow);color:var(--brown-dark)}
+.btn-green{background:var(--green);color:var(--white)}
+.btn-blue{background:var(--blue);color:var(--white)}
+.btn-ghost{background:transparent;color:var(--brown-dark);border-color:var(--brown-light);box-shadow:3px 3px 0 var(--brown-light)}
+.btn-sm{padding:7px 14px;font-size:.82rem;box-shadow:3px 3px 0 var(--brown-dark);margin-bottom:0;width:auto}
+
+/* ── INPUTS ── */
+label{display:block;font-weight:700;font-size:.88rem;color:var(--brown-mid);margin-bottom:5px}
+.input{
+  width:100%;padding:11px 13px;border:var(--border);border-radius:10px;
+  font-family:var(--fb);font-size:1rem;font-weight:600;color:var(--brown-dark);
+  background:var(--cream);outline:none;transition:box-shadow .15s;margin-bottom:12px
+}
+.input:focus{box-shadow:0 0 0 3px var(--yellow)}
+.input::placeholder{color:var(--brown-light);opacity:.65}
+.hint{font-size:.78rem;color:var(--brown-light);font-weight:600;margin-top:-8px;margin-bottom:10px}
+.divider{border:none;border-top:2px dashed var(--brown-light);opacity:.4;margin:10px 0}
+
+/* ── AVATAR GRID ── */
+.avatar-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-bottom:12px}
+.avatar-btn{
+  font-size:1.55rem;padding:7px;border:2px solid transparent;
+  border-radius:10px;background:var(--cream);transition:all .1s;text-align:center;line-height:1
+}
+.avatar-btn.selected{border-color:var(--brown-dark);background:var(--yellow);box-shadow:3px 3px 0 var(--brown-dark)}
+
+/* ── TOGGLES ── */
+.settings-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.toggle-btn{
+  padding:8px 13px;border:2px solid var(--brown-dark);border-radius:8px;
+  background:var(--cream);font-family:var(--fb);font-weight:700;font-size:.84rem;transition:all .1s
+}
+.toggle-btn.active{background:var(--brown-dark);color:var(--white)}
+
+/* ── LOBBY ── */
+.room-code-display{
+  font-family:var(--ft);font-size:2.4rem;letter-spacing:8px;color:var(--red);
+  text-align:center;background:var(--cream);border:3px dashed var(--brown-mid);
+  border-radius:10px;padding:10px;margin:8px 0
+}
+.players-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.player-chip{
+  display:inline-flex;align-items:center;gap:5px;background:var(--cream);
+  border:2px solid var(--brown-dark);border-radius:20px;padding:5px 11px;
+  font-weight:700;font-size:.88rem
+}
+.you-tag{font-size:.72rem;color:var(--brown-light)}
+
+/* ── GAME TOP BAR ── */
+.game-top-bar{
+  width:100%;max-width:720px;display:flex;align-items:center;
+  justify-content:space-between;background:var(--brown-dark);color:var(--white);
+  border-radius:12px;padding:8px 14px;box-shadow:4px 4px 0 var(--brown-mid);margin-bottom:10px
+}
+.round-info{font-family:var(--ft);font-size:1rem}
+.letter-badge{
+  font-family:var(--ft);font-size:2.6rem;color:var(--white);background:var(--red);
+  border:3px solid rgba(0,0,0,.3);border-radius:10px;width:60px;height:60px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:4px 4px 0 rgba(0,0,0,.35)
+}
+.timer-display{font-family:var(--ft);font-size:1.9rem;color:var(--yellow);min-width:58px;text-align:right}
+.timer-display.urgent{color:var(--red-light);animation:pulse .5s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+
+/* ── GAME LAYOUT ── */
+.game-main{display:flex;gap:12px;width:100%;max-width:900px;align-items:flex-start}
+.game-left{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0}
+.game-right{width:240px;flex-shrink:0}
+@media(max-width:640px){.game-main{flex-direction:column}.game-right{width:100%}}
+
+/* ── ANSWER ROWS ── */
+.answers-grid{display:flex;flex-direction:column;gap:8px;width:100%}
+.answer-row{
+  display:flex;align-items:center;gap:8px;background:var(--white);
+  border:2px solid var(--brown-dark);border-radius:10px;padding:9px 11px;
+  box-shadow:3px 3px 0 var(--brown-dark)
+}
+.answer-label{font-weight:800;font-size:.78rem;color:var(--brown-mid);min-width:68px;text-transform:uppercase;letter-spacing:.4px}
+.answer-input{
+  flex:1;border:none;background:transparent;font-family:var(--fb);
+  font-size:.98rem;font-weight:700;color:var(--brown-dark);outline:none;min-width:0
+}
+.answer-input::placeholder{color:var(--brown-light);opacity:.45;font-weight:500}
+.answer-input:disabled{opacity:.6}
+
+/* ── MINI SCORES ── */
+.mini-score-row{display:flex;align-items:center;gap:6px;margin-bottom:7px;font-size:.88rem}
+.ms-name{flex:1;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ms-name em{font-style:normal;color:var(--brown-light);font-size:.75rem}
+.score-badge{
+  background:var(--yellow);border:2px solid var(--brown-dark);border-radius:20px;
+  padding:2px 9px;font-weight:800;font-size:.82rem;white-space:nowrap
+}
+
+/* ── CHAT ── */
+.chat-box{
+  background:var(--white);border:3px solid var(--brown-dark);border-radius:var(--radius);
+  box-shadow:4px 4px 0 var(--brown-dark);display:flex;flex-direction:column;
+  height:300px;overflow:hidden
+}
+.chat-title{
+  background:var(--brown-dark);color:var(--yellow);font-family:var(--ft);
+  font-size:.95rem;padding:7px 12px;border-radius:9px 9px 0 0;flex-shrink:0
+}
+.chat-messages{
+  flex:1;overflow-y:auto;padding:8px 10px;display:flex;
+  flex-direction:column;gap:4px;overscroll-behavior:contain
+}
+.chat-messages::-webkit-scrollbar{width:4px}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--brown-light);border-radius:4px}
+.chat-msg{font-size:.82rem;line-height:1.45;word-break:break-word}
+.chat-msg .sender{font-weight:800;color:var(--brown-mid)}
+.chat-msg.system{color:var(--blue);font-style:italic;font-weight:600}
+.chat-input-row{display:flex;border-top:2px solid var(--brown-dark);padding:6px;gap:6px;flex-shrink:0}
+.chat-input-row input{
+  flex:1;border:2px solid var(--brown-dark);border-radius:8px;padding:6px 10px;
+  font-family:var(--fb);font-size:.84rem;font-weight:600;background:var(--cream);
+  outline:none;min-width:0;transition:box-shadow .12s
+}
+.chat-input-row input:focus{box-shadow:0 0 0 2px var(--yellow)}
+.chat-send-btn{
+  border:2px solid var(--brown-dark);border-radius:8px;background:var(--yellow);
+  padding:6px 12px;font-size:1rem;font-weight:800;
+  box-shadow:2px 2px 0 var(--brown-dark);transition:all .08s;flex-shrink:0
+}
+.chat-send-btn:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--brown-dark)}
+
+/* ── VOTING ── */
+.vote-category-section{
+  background:var(--white);border:3px solid var(--brown-dark);border-radius:var(--radius);
+  padding:14px;width:100%;max-width:520px;box-shadow:4px 4px 0 var(--brown-dark);margin-bottom:12px
+}
+.vote-category-title{
+  font-family:var(--ft);font-size:1.25rem;color:var(--brown-dark);
+  margin-bottom:10px;padding-bottom:6px;border-bottom:2px dashed var(--brown-light)
+}
+.vote-answer-row{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:9px 0;border-bottom:1px dashed var(--brown-light)
+}
+.vote-answer-row:last-child{border-bottom:none}
+.vote-player-info{display:flex;align-items:flex-start;gap:8px;min-width:0;flex:1}
+.vp-avatar{font-size:1.4rem;flex-shrink:0}
+.vp-details{min-width:0}
+.vp-name{font-weight:700;font-size:.78rem;color:var(--brown-mid);margin-bottom:2px}
+.vp-name em{font-style:normal;color:var(--brown-light)}
+.vote-answer-text{font-weight:800;font-size:1rem;color:var(--brown-dark);word-break:break-word}
+.vote-answer-empty{font-style:italic;color:var(--brown-light);font-size:.88rem}
+.vote-verdict{display:flex;align-items:center;flex-shrink:0}
+.vote-btns{display:flex;gap:6px}
+.vote-yes-btn,.vote-no-btn{
+  border:2px solid var(--brown-dark);border-radius:8px;padding:7px 14px;
+  font-weight:800;font-size:.84rem;box-shadow:2px 2px 0 var(--brown-dark);transition:all .08s
+}
+.vote-yes-btn{background:var(--green);color:var(--white)}
+.vote-no-btn{background:var(--red);color:var(--white)}
+.vote-yes-btn:active,.vote-no-btn:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--brown-dark)}
+.vote-yes-btn.selected,.vote-no-btn.selected{filter:brightness(.85);transform:translate(1px,1px);box-shadow:1px 1px 0 var(--brown-dark)}
+.verdict-tag{font-size:.74rem;font-weight:800;border-radius:6px;padding:3px 9px;letter-spacing:.5px}
+.verdict-tag.valid{background:var(--green);color:var(--white)}
+.verdict-tag.invalid{background:var(--red);color:var(--white)}
+
+/* ── LEADERBOARD ── */
+.leaderboard{width:100%;max-width:480px}
+.lb-row{
+  display:flex;align-items:center;gap:10px;background:var(--white);
+  border:2px solid var(--brown-dark);border-radius:11px;padding:10px 14px;
+  margin-bottom:8px;box-shadow:3px 3px 0 var(--brown-dark)
+}
+.lb-row.first{background:var(--yellow);border-width:3px;box-shadow:5px 5px 0 var(--brown-dark)}
+.lb-rank{font-family:var(--ft);font-size:1.5rem;min-width:38px;text-align:center}
+.lb-avatar{font-size:1.5rem}
+.lb-name{flex:1;font-weight:800;font-size:.96rem}
+.lb-score-col{text-align:right}
+.lb-score{font-family:var(--ft);font-size:1.3rem;color:var(--red)}
+.lb-round-score{font-size:.72rem;color:var(--green);font-weight:700}
+
+/* ── WAITING ── */
+.waiting-msg{text-align:center;padding:12px;font-weight:700;color:var(--brown-mid)}
+.waiting-dots span{display:inline-block;animation:blink 1.4s infinite both;font-size:1.3rem}
+.waiting-dots span:nth-child(2){animation-delay:.2s}
+.waiting-dots span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
+
+.banner{text-align:center;font-family:var(--ft);font-size:1.5rem;color:var(--red);margin-bottom:6px}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(16px);
+  background:var(--brown-dark);color:var(--white);padding:10px 20px;border-radius:20px;
+  font-weight:700;font-size:.9rem;opacity:0;transition:opacity .25s,transform .25s;
+  z-index:9999;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@supports(padding:max(0px)){
+  .screen{padding-bottom:max(90px,env(safe-area-inset-bottom) + 24px)}
+}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-thumb{background:var(--brown-light);border-radius:5px}
+</style>
+</head>
+<body>
+
+<!-- ══ HOME ══════════════════════════════════════════════ -->
+<div id="screen-home" class="screen active">
+  <div class="home-deco">🎲</div>
+  <div class="game-logo">KATEGORİLER!</div>
+  <div class="game-subtitle">Harf gelir · cevap verilir</div>
+
+  <div class="card">
+    <div class="card-title">👤 Oyuncu Bilgileri</div>
+    <label for="nickname-input">Takma Ad</label>
+    <input id="nickname-input" class="input" type="text" placeholder="Adını gir…" maxlength="16" autocomplete="nickname"/>
+    <label>Avatar Seç</label>
+    <div class="avatar-grid" id="avatar-grid"></div>
+  </div>
+
+  <div class="card">
+    <button class="btn btn-red" onclick="showCreateRoom()">🏠 Oda Aç</button>
+    <hr class="divider"/>
+    <label for="join-code-input">Oda Kodu ile Katıl</label>
+    <input id="join-code-input" class="input" type="text" placeholder="XXXXXX" maxlength="6"
+      style="text-transform:uppercase;letter-spacing:5px;text-align:center;font-family:var(--ft)"
+      oninput="this.value=this.value.toUpperCase()"/>
+    <button class="btn btn-blue" onclick="joinRoom()">🚪 Odaya Katıl</button>
+  </div>
+</div>
+
+<!-- ══ CREATE ══════════════════════════════════════════════ -->
+<div id="screen-create" class="screen">
+  <div class="game-logo" style="font-size:1.8rem;margin-bottom:4px">⚙️ Oda Ayarları</div>
+  <div class="game-subtitle">ODA SAHİBİ</div>
+
+  <div class="card">
+    <div class="card-title">⏱️ Tur Süresi</div>
+    <div class="settings-row" id="duration-group">
+      <button class="toggle-btn" data-val="45">45 sn</button>
+      <button class="toggle-btn active" data-val="60">60 sn</button>
+      <button class="toggle-btn" data-val="90">90 sn</button>
+      <button class="toggle-btn" data-val="120">120 sn</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📚 Kategoriler <small style="font-weight:600;color:var(--brown-light);font-size:.78rem">(4–8 seç)</small></div>
+    <div class="settings-row" id="category-group"></div>
+  </div>
+
+  <div class="card">
+    <button class="btn btn-green" onclick="createRoom()">✅ Odayı Oluştur</button>
+    <button class="btn btn-ghost" onclick="showScreen('screen-home')">← Geri</button>
+  </div>
+</div>
+
+<!-- ══ LOBBY ══════════════════════════════════════════════ -->
+<div id="screen-lobby" class="screen">
+  <div class="game-logo" style="font-size:1.7rem;margin-bottom:2px">🏠 Lobi</div>
+
+  <div class="card">
+    <div class="card-title">🔑 Oda Kodu</div>
+    <div class="room-code-display" id="lobby-code">------</div>
+    <p class="hint" style="text-align:center;margin-top:6px">Arkadaşlarını davet et!</p>
+    <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="copyCode()">📤 Davet Et / Kopyala</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">👥 Oyuncular (<span id="player-count">0</span>/10)</div>
+    <div class="players-list" id="players-list"></div>
+  </div>
+
+  <div class="card">
+    <div id="lobby-host-controls" style="display:none">
+      <button class="btn btn-red" onclick="startGame()">🚀 Oyunu Başlat!</button>
+    </div>
+    <div id="lobby-wait-msg" class="waiting-msg" style="display:none">
+      Oda sahibinin başlatması bekleniyor…
+      <div class="waiting-dots" style="margin-top:8px"><span>●</span><span>●</span><span>●</span></div>
+    </div>
+    <button class="btn btn-ghost" style="margin-top:6px" onclick="leaveRoom()">🚪 Odadan Çık</button>
+  </div>
+
+  <div class="card" style="padding:0;overflow:hidden">
+    <div class="chat-box" style="border:none;box-shadow:none;height:230px">
+      <div class="chat-title">💬 Sohbet</div>
+      <div class="chat-messages" id="lobby-chat-messages"></div>
+      <div class="chat-input-row">
+        <input type="text" id="lobby-chat-input" placeholder="Bir şeyler yaz…" maxlength="120"
+          onkeydown="if(event.key==='Enter')sendChat('lobby')"/>
+        <button class="chat-send-btn" onclick="sendChat('lobby')">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ GAME ══════════════════════════════════════════════ -->
+<div id="screen-game" class="screen" style="padding:10px 10px 90px">
+  <div class="game-top-bar">
+    <div class="round-info">Tur <span id="round-num">1</span> / <span id="total-rounds">28</span></div>
+    <div class="letter-badge" id="current-letter">A</div>
+    <div class="timer-display" id="timer">60</div>
+  </div>
+
+  <div class="game-main">
+    <div class="game-left">
+      <div class="answers-grid" id="answers-grid"></div>
+      <button class="btn btn-red" id="submit-btn" onclick="submitAnswers()">✏️ Cevapları Gönder!</button>
+      <div id="waiting-others" class="waiting-msg" style="display:none">
+        Diğer oyuncular tamamlanıyor…
+        <div class="waiting-dots" style="margin-top:6px"><span>●</span><span>●</span><span>●</span></div>
+      </div>
+    </div>
+
+    <div class="game-right">
+      <div class="card" style="padding:12px;margin-bottom:10px">
+        <div class="card-title" style="font-size:.95rem;margin-bottom:8px">🏆 Skor</div>
+        <div id="mini-scores"></div>
+      </div>
+      <div class="chat-box">
+        <div class="chat-title">💬 Sohbet</div>
+        <div class="chat-messages" id="game-chat-messages"></div>
+        <div class="chat-input-row">
+          <input type="text" id="game-chat-input" placeholder="Mesaj…" maxlength="120"
+            onkeydown="if(event.key==='Enter')sendChat('game')"/>
+          <button class="chat-send-btn" onclick="sendChat('game')">➤</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ VOTING ══════════════════════════════════════════════ -->
+<div id="screen-voting" class="screen">
+  <div class="game-logo" style="font-size:1.7rem;margin-bottom:4px">🗳️ Oylama</div>
+  <p style="text-align:center;font-weight:700;color:var(--brown-mid);margin-bottom:12px">
+    Bu turun harfi: <span id="vote-letter" style="font-family:var(--ft);color:var(--red);font-size:1.5rem"></span>
+  </p>
+  <div id="vote-categories-container" style="width:100%;max-width:520px"></div>
+  <div class="card" style="max-width:520px">
+    <button class="btn btn-green" onclick="submitVotes()">✅ Oyları Onayla</button>
+  </div>
+  <div class="card" style="max-width:520px;padding:0;overflow:hidden">
+    <div class="chat-box" style="border:none;box-shadow:none;height:210px">
+      <div class="chat-title">💬 Sohbet</div>
+      <div class="chat-messages" id="vote-chat-messages"></div>
+      <div class="chat-input-row">
+        <input type="text" id="vote-chat-input" placeholder="Mesaj…" maxlength="120"
+          onkeydown="if(event.key==='Enter')sendChat('vote')"/>
+        <button class="chat-send-btn" onclick="sendChat('vote')">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RESULTS ══════════════════════════════════════════════ -->
+<div id="screen-results" class="screen">
+  <div class="game-logo" style="font-size:1.7rem;margin-bottom:4px">📊 Sonuçlar</div>
+  <div class="banner" id="results-banner">Tur Sonuçları</div>
+  <div class="leaderboard" id="leaderboard"></div>
+  <div class="card" style="max-width:480px">
+    <div id="results-host-controls" style="display:none">
+      <button class="btn btn-red" onclick="nextRound()">▶️ Sonraki Tur</button>
+    </div>
+    <div id="results-wait-msg" class="waiting-msg" style="display:none">
+      Sonraki tur için bekleniyor…
+      <div class="waiting-dots" style="margin-top:6px"><span>●</span><span>●</span><span>●</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ GAMEOVER ══════════════════════════════════════════════ -->
+<div id="screen-gameover" class="screen">
+  <div class="home-deco" style="font-size:4rem;animation:none">🏆</div>
+  <div class="game-logo">Oyun Bitti!</div>
+  <div class="game-subtitle">FİNAL SIRALAMASI</div>
+  <div class="leaderboard" id="final-leaderboard"></div>
+  <div class="card" style="max-width:480px">
+    <button class="btn btn-yellow" onclick="playAgain()">🔄 Tekrar Oyna</button>
+    <button class="btn btn-ghost" onclick="showScreen('screen-home')">🏠 Ana Menü</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// ⚠️  BURAYA KENDİ SUPABASE BİLGİLERİNİ GİR
+// ════════════════════════════════════════════════════════════
+const SUPABASE_URL      = 'https://YOUR_PROJECT.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+
+// ════════════════════════════════════════════════════════════
+// SABİTLER
+// ════════════════════════════════════════════════════════════
+const LETTER_POOL = ['A','B','C','Ç','D','E','F','G','H','I','İ','J','K','L','M','N','O','Ö','P','R','S','Ş','T','U','Ü','V','Y','Z'];
+const ALL_CATEGORIES = ['İsim','Şehir','Hayvan','Ünlü','Ülke','Bitki','Yiyecek','Spor','Renk','Meslek','Film','Marka'];
+const ALL_AVATARS    = ['🦁','🐯','🦊','🐺','🐸','🦝','🐧','🦋','🐙','🦄','🐉','🐻','🦩','🦀','🐬','🦜','🐝','🦖'];
+
+// ════════════════════════════════════════════════════════════
+// SUPABASE
+// ════════════════════════════════════════════════════════════
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════
+const S = {
+  playerId: null, nickname: '', avatar: '🦁',
+  roomId: null, roomCode: null, isHost: false, roomData: null,
+  players: [], answers: [], myAnswers: {}, myVotes: {},
+  submitted: false, timerInterval: null,
+  selectedDuration: 60,
+  selectedCategories: ['İsim','Şehir','Hayvan','Ünlü','Ülke','Bitki'],
+  subs: [],
+};
+
+// ════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  S.playerId = localStorage.getItem('player_id') || crypto.randomUUID();
+  localStorage.setItem('player_id', S.playerId);
+
+  const nick = localStorage.getItem('player_nickname');
+  if (nick) { document.getElementById('nickname-input').value = nick; S.nickname = nick; }
+
+  S.avatar = localStorage.getItem('player_avatar') || '🦁';
+  renderAvatarGrid();
+  renderCategoryToggles();
+  bindDurationBtns();
+
+  const urlCode = new URLSearchParams(location.search).get('code');
+  if (urlCode) document.getElementById('join-code-input').value = urlCode.toUpperCase();
+
+  window.addEventListener('beforeunload', () => {
+    if (S.playerId && S.roomId) db.from('players').update({is_online:false}).eq('id',S.playerId);
+  });
+});
+
+// ════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+let _tt;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(_tt); _tt=setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+function escH(s=''){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function genCode(){
+  const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return Array.from({length:6},()=>c[Math.floor(Math.random()*c.length)]).join('');
+}
+
+function pickLetter(pool){
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+function normStr(s){
+  return s.toLowerCase()
+    .replace(/İ/g,'i').replace(/I/g,'ı')
+    .replace(/Ğ/g,'ğ').replace(/Ü/g,'ü')
+    .replace(/Ş/g,'ş').replace(/Ö/g,'ö').replace(/Ç/g,'ç');
+}
+
+function round2(n){ return Math.round(n*100)/100; }
+
+function getValidNick(){
+  const v = document.getElementById('nickname-input').value.trim();
+  if(!v){ toast('Lütfen bir takma ad gir!'); return null; }
+  S.nickname=v; localStorage.setItem('player_nickname',v); return v;
+}
+
+function sortedPlayers(){
+  return [...S.players].sort((a,b)=>{
+    if(b.total_score!==a.total_score) return b.total_score-a.total_score;
+    if(b.last_round_score!==a.last_round_score) return b.last_round_score-a.last_round_score;
+    return a.collision_count-b.collision_count;
+  });
+}
+
+function unsubAll(){
+  S.subs.forEach(ch=>{ try{ db.removeChannel(ch); }catch(_){} });
+  S.subs=[];
+}
+
+// ════════════════════════════════════════════════════════════
+// RENDER HELPERS
+// ════════════════════════════════════════════════════════════
+function renderAvatarGrid(){
+  const g=document.getElementById('avatar-grid'); g.innerHTML='';
+  ALL_AVATARS.forEach(av=>{
+    const b=document.createElement('button');
+    b.className='avatar-btn'+(av===S.avatar?' selected':'');
+    b.textContent=av;
+    b.onclick=()=>{
+      document.querySelectorAll('.avatar-btn').forEach(x=>x.classList.remove('selected'));
+      b.classList.add('selected'); S.avatar=av; localStorage.setItem('player_avatar',av);
+    };
+    g.appendChild(b);
+  });
+}
+
+function renderCategoryToggles(){
+  const g=document.getElementById('category-group'); g.innerHTML='';
+  ALL_CATEGORIES.forEach(cat=>{
+    const b=document.createElement('button');
+    b.className='toggle-btn'+(S.selectedCategories.includes(cat)?' active':'');
+    b.textContent=cat;
+    b.onclick=()=>{
+      const cs=[...S.selectedCategories];
+      if(cs.includes(cat)){
+        if(cs.length<=4){ toast('En az 4 kategori seçilmeli!'); return; }
+        S.selectedCategories=cs.filter(c=>c!==cat); b.classList.remove('active');
+      } else {
+        if(cs.length>=8){ toast('En fazla 8 kategori seçebilirsin!'); return; }
+        S.selectedCategories=[...cs,cat]; b.classList.add('active');
+      }
+    };
+    g.appendChild(b);
+  });
+}
+
+function bindDurationBtns(){
+  document.querySelectorAll('#duration-group .toggle-btn').forEach(btn=>{
+    btn.onclick=()=>{
+      document.querySelectorAll('#duration-group .toggle-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active'); S.selectedDuration=parseInt(btn.dataset.val);
+    };
+  });
+}
+
+function renderPlayersList(){
+  const list=document.getElementById('players-list');
+  const cnt=document.getElementById('player-count');
+  list.innerHTML=''; if(cnt) cnt.textContent=S.players.length;
+  S.players.forEach(p=>{
+    const isHost=S.roomData&&p.id===S.roomData.host_id;
+    const chip=document.createElement('div');
+    chip.className='player-chip';
+    chip.innerHTML=`${p.avatar} <span>${escH(p.nickname)}</span>${isHost?'👑':''}${p.id===S.playerId?'<span class="you-tag">(sen)</span>':''}`;
+    list.appendChild(chip);
+  });
+}
+
+function renderAnswersGrid(cats,letter){
+  const g=document.getElementById('answers-grid'); g.innerHTML='';
+  cats.forEach(cat=>{
+    const row=document.createElement('div');
+    row.className='answer-row';
+    row.innerHTML=`<span class="answer-label">${cat}</span><input class="answer-input" data-cat="${cat}" placeholder="${escH(letter)} ile başlayan…" maxlength="30" autocomplete="off" autocorrect="off" spellcheck="false"/>`;
+    g.appendChild(row);
+  });
+}
+
+function collectAnswers(){
+  const r={};
+  document.querySelectorAll('.answer-input').forEach(i=>{ r[i.dataset.cat]=i.value.trim(); });
+  return r;
+}
+
+function lockAnswers(){
+  document.querySelectorAll('.answer-input').forEach(i=>{ i.disabled=true; i.style.opacity='.6'; });
+}
+
+function startTimer(endISO, onExpire){
+  clearInterval(S.timerInterval);
+  const el=document.getElementById('timer');
+  function tick(){
+    const left=Math.max(0,Math.round((new Date(endISO)-Date.now())/1000));
+    if(el){ el.textContent=left; el.className='timer-display'+(left<=10?' urgent':''); }
+    if(left<=0){ clearInterval(S.timerInterval); S.timerInterval=null; onExpire(); }
+  }
+  tick(); S.timerInterval=setInterval(tick,500);
+}
+
+function stopTimer(){ clearInterval(S.timerInterval); S.timerInterval=null; }
+
+function renderMiniScores(){
+  const c=document.getElementById('mini-scores'); if(!c) return;
+  c.innerHTML=sortedPlayers().map(p=>`
+    <div class="mini-score-row">
+      <span>${p.avatar}</span>
+      <span class="ms-name">${escH(p.nickname)}${p.id===S.playerId?' <em>(sen)</em>':''}</span>
+      <span class="score-badge">${p.total_score}</span>
+    </div>`).join('');
+}
+
+function renderLeaderboard(id){
+  const c=document.getElementById(id); if(!c) return;
+  const medals=['🥇','🥈','🥉'];
+  c.innerHTML=sortedPlayers().map((p,i)=>`
+    <div class="lb-row${i===0?' first':''}">
+      <div class="lb-rank">${medals[i]||(i+1)}</div>
+      <div class="lb-avatar">${p.avatar}</div>
+      <div class="lb-name">${escH(p.nickname)}${p.id===S.playerId?'<span class="you-tag">(sen)</span>':''}</div>
+      <div class="lb-score-col">
+        <div class="lb-score">${p.total_score}</div>
+        <div class="lb-round-score">+${p.last_round_score} bu tur</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderVotingCards(cats, letter){
+  const c=document.getElementById('vote-categories-container'); c.innerHTML='';
+  cats.forEach(cat=>{
+    const catAns=S.answers.filter(a=>a.category===cat);
+    if(!catAns.length) return;
+    const sec=document.createElement('div');
+    sec.className='vote-category-section';
+    let html=`<div class="vote-category-title">${cat}</div>`;
+    catAns.forEach(ans=>{
+      const player=S.players.find(p=>p.id===ans.player_id);
+      const isMe=ans.player_id===S.playerId;
+      const txt=(ans.answer||'').trim();
+      const bad=isAutoInvalid(txt,letter);
+      if(bad&&S.myVotes[ans.id]===undefined) S.myVotes[ans.id]=false;
+      else if(isMe&&S.myVotes[ans.id]===undefined) S.myVotes[ans.id]=true;
+      html+=`<div class="vote-answer-row">
+        <div class="vote-player-info">
+          <span class="vp-avatar">${player?player.avatar:'❓'}</span>
+          <div class="vp-details">
+            <div class="vp-name">${player?escH(player.nickname):'?'}${isMe?' <em>(sen)</em>':''}</div>
+            ${txt?`<div class="vote-answer-text">${escH(txt)}</div>`:`<div class="vote-answer-empty">— boş —</div>`}
+          </div>
+        </div>
+        <div class="vote-verdict">
+          ${isMe?`<span class="verdict-tag valid">SEN</span>`:
+            bad?`<span class="verdict-tag invalid">GEÇERSİZ</span>`:
+            `<div class="vote-btns">
+              <button class="vote-yes-btn${S.myVotes[ans.id]===true?' selected':''}" id="y-${ans.id}" onclick="castVote('${ans.id}',true)">✓ Evet</button>
+              <button class="vote-no-btn${S.myVotes[ans.id]===false?' selected':''}" id="n-${ans.id}" onclick="castVote('${ans.id}',false)">✗ Hayır</button>
+            </div>`}
+        </div>
+      </div>`;
+    });
+    sec.innerHTML=html; c.appendChild(sec);
+  });
+}
+
+function castVote(aid,isValid){
+  S.myVotes[aid]=isValid;
+  const y=document.getElementById('y-'+aid);
+  const n=document.getElementById('n-'+aid);
+  if(y) y.classList.toggle('selected',isValid);
+  if(n) n.classList.toggle('selected',!isValid);
+}
+
+function isAutoInvalid(answer,letter){
+  if(!answer) return true;
+  if(/[0-9!@#$%^&*()\-_=+\[\]{};':"\\|,.<>/?]/.test(answer)) return true;
+  return !normStr(answer).startsWith(normStr(letter));
+}
+
+// ════════════════════════════════════════════════════════════
+// CHAT
+// ════════════════════════════════════════════════════════════
+const CHAT_EL={lobby:'lobby-chat-messages',game:'game-chat-messages',vote:'vote-chat-messages'};
+const CHAT_IN={lobby:'lobby-chat-input',game:'game-chat-input',vote:'vote-chat-input'};
+
+function appendMsg(ctx,msg,scroll=true){
+  const el=document.getElementById(CHAT_EL[ctx]); if(!el) return;
+  const d=document.createElement('div');
+  d.className='chat-msg';
+  d.innerHTML=`<span class="sender">${msg.avatar} ${escH(msg.nickname)}:</span> ${escH(msg.content)}`;
+  el.appendChild(d); if(scroll) el.scrollTop=el.scrollHeight;
+}
+
+async function loadMsgs(ctx){
+  const {data}=await db.from('messages').select('*').eq('room_id',S.roomId)
+    .order('created_at',{ascending:true}).limit(60);
+  const el=document.getElementById(CHAT_EL[ctx]); if(!el) return;
+  el.innerHTML=''; (data||[]).forEach(m=>appendMsg(ctx,m,false));
+  el.scrollTop=el.scrollHeight;
+}
+
+async function sendChat(ctx){
+  const inp=document.getElementById(CHAT_IN[ctx]); if(!inp) return;
+  const content=inp.value.trim(); if(!content) return;
+  inp.value='';
+  try{
+    await db.from('messages').insert({
+      room_id:S.roomId, player_id:S.playerId,
+      nickname:S.nickname, avatar:S.avatar, content:content.slice(0,200)
+    });
+  }catch(e){ toast('Mesaj gönderilemedi!'); }
+}
+
+// ════════════════════════════════════════════════════════════
+// DB HELPERS
+// ════════════════════════════════════════════════════════════
+async function refreshPlayers(){
+  const {data}=await db.from('players').select('*').eq('room_id',S.roomId)
+    .eq('is_online',true).order('joined_at');
+  S.players=data||[]; renderPlayersList();
+}
+
+// ════════════════════════════════════════════════════════════
+// HOME ACTIONS
+// ════════════════════════════════════════════════════════════
+function showCreateRoom(){
+  if(!getValidNick()) return;
+  showScreen('screen-create');
+}
+
+async function createRoom(){
+  if(!getValidNick()) return;
+  if(S.selectedCategories.length<4){ toast('En az 4 kategori seç!'); return; }
+
+  const code=genCode();
+  let room;
+  try{
+    const {data,error}=await db.from('rooms').insert({
+      code, host_id:S.playerId, status:'lobby',
+      categories:S.selectedCategories, round_duration:S.selectedDuration,
+      letter_pool:[...LETTER_POOL], current_round:0
+    }).select().single();
+    if(error) throw error; room=data;
+  }catch(e){ toast('Oda oluşturulamadı: '+e.message); return; }
+
+  Object.assign(S,{roomId:room.id,roomCode:room.code,isHost:true,roomData:room});
+  await db.from('players').upsert({id:S.playerId,room_id:room.id,nickname:S.nickname,avatar:S.avatar,is_online:true},{onConflict:'id'});
+  history.pushState({},'','?code='+code);
+  await enterLobby();
+}
+
+async function joinRoom(){
+  if(!getValidNick()) return;
+  const raw=document.getElementById('join-code-input').value.trim().toUpperCase();
+  if(raw.length<4){ toast('Geçerli bir oda kodu gir!'); return; }
+
+  const {data:room}=await db.from('rooms').select('*').eq('code',raw).single();
+  if(!room){ toast('Oda bulunamadı!'); return; }
+  if(room.status==='finished'){ toast('Bu oda kapanmış!'); return; }
+
+  const {count}=await db.from('players').select('*',{count:'exact',head:true})
+    .eq('room_id',room.id).eq('is_online',true);
+  if(count>=10){ toast('Oda dolu! (Maks 10 kişi)'); return; }
+
+  Object.assign(S,{roomId:room.id,roomCode:room.code,isHost:room.host_id===S.playerId,roomData:room});
+  await db.from('players').upsert({id:S.playerId,room_id:room.id,nickname:S.nickname,avatar:S.avatar,is_online:true},{onConflict:'id'});
+  history.pushState({},'','?code='+room.code);
+
+  const st=room.status;
+  if(st==='lobby') await enterLobby();
+  else if(st==='playing') await enterGame(room);
+  else if(st==='voting') await enterVoting(room);
+  else if(st==='results') await enterResults(room);
+}
+
+async function leaveRoom(){
+  if(S.roomId) await db.from('players').update({is_online:false}).eq('id',S.playerId);
+  unsubAll(); stopTimer();
+  Object.assign(S,{roomId:null,roomCode:null,isHost:false,roomData:null,players:[],answers:[],myAnswers:{},myVotes:{},submitted:false});
+  history.pushState({},'',location.pathname);
+  showScreen('screen-home');
+}
+
+// ════════════════════════════════════════════════════════════
+// ROOM UPDATE ROUTER
+// ════════════════════════════════════════════════════════════
+async function handleRoomUpdate(room){
+  S.roomData=room;
+  const st=room.status;
+  if(st==='playing') await enterGame(room);
+  else if(st==='voting'){ stopTimer(); await enterVoting(room); }
+  else if(st==='results') await enterResults(room);
+  else if(st==='finished') await enterGameOver();
+  else if(st==='lobby') await enterLobby();
+}
+
+function subRoom(){
+  const ch=db.channel('room:'+S.roomId)
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'rooms',filter:`id=eq.${S.roomId}`},
+      p=>handleRoomUpdate(p.new))
+    .subscribe();
+  S.subs.push(ch);
+}
+
+function subPlayers(){
+  const ch=db.channel('players:'+S.roomId)
+    .on('postgres_changes',{event:'*',schema:'public',table:'players',filter:`room_id=eq.${S.roomId}`},
+      ()=>refreshPlayers())
+    .subscribe();
+  S.subs.push(ch);
+}
+
+function subAnswers(cb){
+  const ch=db.channel('answers:'+S.roomId)
+    .on('postgres_changes',{event:'*',schema:'public',table:'answers',filter:`room_id=eq.${S.roomId}`},
+      cb)
+    .subscribe();
+  S.subs.push(ch);
+}
+
+function subMsgs(ctx){
+  const ch=db.channel('msgs:'+S.roomId+':'+ctx)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:`room_id=eq.${S.roomId}`},
+      p=>appendMsg(ctx,p.new))
+    .subscribe();
+  S.subs.push(ch);
+}
+
+// ════════════════════════════════════════════════════════════
+// LOBBY
+// ════════════════════════════════════════════════════════════
+async function enterLobby(){
+  unsubAll(); showScreen('screen-lobby');
+  document.getElementById('lobby-code').textContent=S.roomCode;
+  document.getElementById('lobby-host-controls').style.display=S.isHost?'block':'none';
+  document.getElementById('lobby-wait-msg').style.display=S.isHost?'none':'block';
+  await refreshPlayers();
+  subRoom(); subPlayers(); subMsgs('lobby');
+  await loadMsgs('lobby');
+}
+
+function copyCode(){
+  const shareData={title:'Kategoriler!',text:`Oda kodum: ${S.roomCode}`,url:location.href};
+  if(navigator.share) navigator.share(shareData).catch(()=>fbCopy());
+  else fbCopy();
+}
+function fbCopy(){
+  navigator.clipboard.writeText(location.href)
+    .then(()=>toast('Bağlantı kopyalandı! 📋'))
+    .catch(()=>toast('Kod: '+S.roomCode));
+}
+
+async function startGame(){
+  const {data:pl}=await db.from('players').select('*').eq('room_id',S.roomId).eq('is_online',true);
+  if((pl||[]).length<2){ toast('En az 2 oyuncu gerekli!'); return; }
+  const pool=[...LETTER_POOL];
+  const letter=pickLetter(pool);
+  const remaining=pool.filter(l=>l!==letter);
+  await db.from('rooms').update({
+    status:'playing', current_round:1, current_letter:letter, letter_pool:remaining,
+    round_end_time:new Date(Date.now()+S.roomData.round_duration*1000).toISOString()
+  }).eq('id',S.roomId);
+}
+
+// ════════════════════════════════════════════════════════════
+// GAME
+// ════════════════════════════════════════════════════════════
+async function enterGame(room){
+  S.roomData=room; S.submitted=false; S.myAnswers={};
+  unsubAll(); showScreen('screen-game');
+  document.getElementById('round-num').textContent=room.current_round;
+  document.getElementById('total-rounds').textContent=LETTER_POOL.length;
+  document.getElementById('current-letter').textContent=room.current_letter;
+  document.getElementById('submit-btn').style.display='flex';
+  document.getElementById('waiting-others').style.display='none';
+  renderAnswersGrid(room.categories,room.current_letter);
+  await refreshPlayers(); renderMiniScores();
+  subAnswers(()=>{ if(S.isHost) checkAllSubmitted(); });
+  subRoom(); subMsgs('game');
+  await loadMsgs('game');
+  startTimer(room.round_end_time,()=>{ if(!S.submitted) autoSubmit(); });
+}
+
+async function submitAnswers(){
+  if(S.submitted) return;
+  S.myAnswers=collectAnswers(); S.submitted=true;
+  lockAnswers();
+  document.getElementById('submit-btn').style.display='none';
+  document.getElementById('waiting-others').style.display='block';
+  await persistAnswers(); toast('Cevaplar gönderildi! ✅');
+  if(S.isHost) await checkAllSubmitted();
+}
+
+async function autoSubmit(){
+  if(S.submitted) return;
+  S.myAnswers=collectAnswers(); S.submitted=true;
+  lockAnswers();
+  document.getElementById('submit-btn').style.display='none';
+  document.getElementById('waiting-others').style.display='block';
+  await persistAnswers();
+  if(S.isHost) await checkAllSubmitted();
+}
+
+async function persistAnswers(){
+  const rows=S.roomData.categories.map(cat=>({
+    room_id:S.roomId, player_id:S.playerId,
+    round_number:S.roomData.current_round, letter:S.roomData.current_letter,
+    category:cat, answer:S.myAnswers[cat]||''
+  }));
+  await db.from('answers').upsert(rows,{onConflict:'room_id,player_id,round_number,category'});
+}
+
+async function checkAllSubmitted(){
+  const {data:pl}=await db.from('players').select('id').eq('room_id',S.roomId).eq('is_online',true);
+  const expected=(pl||[]).length*S.roomData.categories.length;
+  const {count}=await db.from('answers').select('*',{count:'exact',head:true})
+    .eq('room_id',S.roomId).eq('round_number',S.roomData.current_round);
+  if(count>=expected){ stopTimer(); await db.from('rooms').update({status:'voting'}).eq('id',S.roomId); }
+}
+
+// ════════════════════════════════════════════════════════════
+// VOTING
+// ════════════════════════════════════════════════════════════
+async function enterVoting(room){
+  S.roomData=room; S.myVotes={};
+  unsubAll(); showScreen('screen-voting');
+  document.getElementById('vote-letter').textContent=room.current_letter;
+  const {data}=await db.from('answers').select('*').eq('room_id',S.roomId).eq('round_number',room.current_round);
+  S.answers=data||[];
+  await refreshPlayers();
+  renderVotingCards(room.categories,room.current_letter);
+  subRoom(); subMsgs('vote');
+  await loadMsgs('vote');
+}
+
+async function submitVotes(){
+  const rows=Object.entries(S.myVotes).map(([aid,isValid])=>({
+    room_id:S.roomId, voter_id:S.playerId, answer_id:aid, is_valid:isValid
+  }));
+  await db.from('votes').upsert(rows,{onConflict:'voter_id,answer_id'});
+  toast('Oylar gönderildi! 🗳️');
+  if(S.isHost) await runScoring();
+}
+
+// ════════════════════════════════════════════════════════════
+// SCORING
+// ════════════════════════════════════════════════════════════
+async function runScoring(){
+  const room=S.roomData;
+  const [{data:allAnswers},{data:allVotes}]=await Promise.all([
+    db.from('answers').select('*').eq('room_id',S.roomId).eq('round_number',room.current_round),
+    db.from('votes').select('*').eq('room_id',S.roomId)
+  ]);
+
+  // 1. Geçerlilik belirle
+  const updArr=(allAnswers||[]).map(ans=>{
+    const vf=(allVotes||[]).filter(v=>v.answer_id===ans.id);
+    const vc=vf.filter(v=>v.is_valid).length;
+    const ic=vf.filter(v=>!v.is_valid).length;
+    let isValid;
+    if(!vf.length) isValid=!isAutoInvalid(ans.answer,ans.letter);
+    else isValid=vc>=ic;
+    return{...ans,is_valid:isValid,vote_count:vc,invalid_vote_count:ic};
+  });
+  await Promise.all(updArr.map(a=>db.from('answers').update({is_valid:a.is_valid,vote_count:a.vote_count,invalid_vote_count:a.invalid_vote_count}).eq('id',a.id)));
+
+  // 2. Puan hesapla
+  const scored=updArr.map(a=>({...a,score:0}));
+  room.categories.forEach(cat=>{
+    const valid=scored.filter(a=>a.category===cat&&a.is_valid&&a.answer.trim());
+    const groups={};
+    valid.forEach(a=>{ const k=normStr(a.answer); if(!groups[k]) groups[k]=[]; groups[k].push(a); });
+    Object.values(groups).forEach(g=>{ const pts=round2(10/g.length); g.forEach(a=>a.score=pts); });
+  });
+  await Promise.all(scored.map(a=>db.from('answers').update({score:a.score}).eq('id',a.id)));
+
+  // 3. Oyuncu puanlarını güncelle
+  const {data:players}=await db.from('players').select('*').eq('room_id',S.roomId);
+  await Promise.all((players||[]).map(p=>{
+    const pa=scored.filter(a=>a.player_id===p.id);
+    const rs=round2(pa.reduce((s,a)=>s+(a.score||0),0));
+    const cols=pa.filter(a=>{
+      if(!a.is_valid||!a.answer.trim()) return false;
+      const k=normStr(a.answer);
+      return scored.some(b=>b.id!==a.id&&b.category===a.category&&normStr(b.answer)===k&&b.is_valid);
+    }).length;
+    return db.from('players').update({
+      total_score:round2(p.total_score+rs),
+      last_round_score:rs,
+      collision_count:p.collision_count+cols
+    }).eq('id',p.id);
+  }));
+
+  // 4. Durum geçişi
+  const poolLeft=room.letter_pool||[];
+  await db.from('rooms').update({status:poolLeft.length===0?'finished':'results'}).eq('id',S.roomId);
+}
+
+// ════════════════════════════════════════════════════════════
+// RESULTS
+// ════════════════════════════════════════════════════════════
+async function enterResults(room){
+  S.roomData=room; unsubAll(); showScreen('screen-results');
+  document.getElementById('results-banner').textContent=`Tur ${room.current_round} Sonuçları`;
+  document.getElementById('results-host-controls').style.display=S.isHost?'block':'none';
+  document.getElementById('results-wait-msg').style.display=S.isHost?'none':'block';
+  await refreshPlayers(); renderLeaderboard('leaderboard');
+  subRoom();
+}
+
+async function nextRound(){
+  const room=S.roomData;
+  const pool=room.letter_pool||[];
+  if(!pool.length){ await db.from('rooms').update({status:'finished'}).eq('id',S.roomId); return; }
+  const letter=pickLetter(pool);
+  const remaining=pool.filter(l=>l!==letter);
+  await db.from('rooms').update({
+    status:'playing', current_round:room.current_round+1,
+    current_letter:letter, letter_pool:remaining,
+    round_end_time:new Date(Date.now()+room.round_duration*1000).toISOString()
+  }).eq('id',S.roomId);
+}
+
+// ════════════════════════════════════════════════════════════
+// GAME OVER
+// ════════════════════════════════════════════════════════════
+async function enterGameOver(){
+  unsubAll(); showScreen('screen-gameover');
+  await refreshPlayers(); renderLeaderboard('final-leaderboard');
+}
+
+async function playAgain(){
+  if(!S.isHost){ toast('Sadece oda sahibi yeni oyun başlatabilir!'); return; }
+  await Promise.all([
+    db.from('players').update({total_score:0,last_round_score:0,collision_count:0}).eq('room_id',S.roomId),
+    db.from('answers').delete().eq('room_id',S.roomId),
+    db.from('votes').delete().eq('room_id',S.roomId),
+    db.from('rooms').update({status:'lobby',current_round:0,current_letter:null,letter_pool:[...LETTER_POOL],round_end_time:null}).eq('id',S.roomId)
+  ]);
+  await enterLobby();
+}
+</script>
+</body>
+</html>
